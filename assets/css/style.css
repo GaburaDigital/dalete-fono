@@ -1,0 +1,974 @@
+/* =========================================================
+   Dálete Cavalcante — Fonoaudióloga Infantojuvenil
+   Cartão de visita digital
+   ========================================================= */
+
+:root {
+  /* Brand palette */
+  --purple: #BCA2DD;
+  --purple-deep: #9B7FC4;
+  --purple-ink: #6B4F94;
+  --blue: #7BE6FF;
+  --blue-deep: #3FC3E6;
+  --blue-ink: #1D7C93;
+  --pink: #FFA9D2;
+  --pink-deep: #F787B7;
+  --pink-ink: #C15D8C;
+  --yellow: #FFD97B;
+  --yellow-deep: #F0BB4A;
+  --yellow-ink: #8A6416;
+
+  /* Neutrals derived from the brand's outline/caption color */
+  --ink: #4A3620;
+  --ink-soft: #83705A;
+  --ink-faint: #9C8A70;
+  --paper: #FFFFFF;
+  --paper-warm: #FFFDF8;
+  --line: #EFE6D6;
+
+  --shadow-sticker: 0 14px 30px -12px rgba(74, 54, 32, 0.22);
+  --shadow-sticker-hover: 0 20px 34px -10px rgba(74, 54, 32, 0.28);
+
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-pill: 999px;
+
+  --font-display: "Baloo 2", "Segoe UI Rounded", sans-serif;
+  --font-body: "Nunito", "Segoe UI", sans-serif;
+  --font-script: "Caveat", cursive;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+button { font-family: inherit; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Visible keyboard focus */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--purple-deep);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+/* =========================================================
+   Ambient background — soft blobs, confetti dots, line-art
+   clouds and a drifting butterfly, echoing the brand's own
+   promotional artwork. Kept faint so the page reads as white.
+   ========================================================= */
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(38px);
+  opacity: 0.35;
+}
+.blob--purple { width: 340px; height: 340px; top: -120px; left: -110px; background: var(--purple); }
+.blob--blue   { width: 300px; height: 300px; top: -90px; right: -100px; background: var(--blue); }
+.blob--pink   { width: 320px; height: 320px; bottom: -130px; right: -110px; background: var(--pink); }
+.blob--yellow { width: 260px; height: 260px; bottom: -90px; left: -90px; background: var(--yellow); }
+
+.dot {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.55;
+}
+
+.cloud-deco {
+  position: absolute;
+  opacity: 0.5;
+}
+
+.butterfly-deco {
+  position: absolute;
+  width: 34px;
+  animation: drift 7s ease-in-out infinite;
+}
+.butterfly-deco path,
+.butterfly-deco ellipse { }
+
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) rotate(-4deg); }
+  50% { transform: translate(6px, -10px) rotate(4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .butterfly-deco { animation: none; }
+  html { scroll-behavior: auto; }
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+/* =========================================================
+   Layout shell
+   ========================================================= */
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 40px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 600px) {
+  .page { max-width: 500px; padding-top: 56px; }
+}
+
+/* =========================================================
+   Sticker component — the page's signature treatment:
+   a thick paper border + soft warm shadow, echoing the
+   brand's own die-cut badge logo variants.
+   ========================================================= */
+
+.sticker {
+  background: var(--paper-warm);
+  border: 4px solid var(--paper);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sticker);
+}
+
+/* Note: no load-time "fade/rise in" animation on purpose — any
+   approach that hides content until an animation completes risks
+   showing a blank page to a tool or bot that captures a single
+   frame before the timeline finishes. Content is simply present.
+   Motion is reserved for direct interaction (button hover/focus
+   below), which carries no such risk. */
+
+/* =========================================================
+   Header: hero illustration — shown whole, uncropped, so the
+   full artwork (balloons, clouds, butterfly) reads clearly.
+   ========================================================= */
+
+.hero-illustration {
+  width: 220px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 12px 20px rgba(74, 54, 32, 0.16));
+}
+.hero-illustration img {
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 600px) {
+  .hero-illustration { width: 250px; }
+}
+
+/* =========================================================
+   Photo placeholder
+   ========================================================= */
+
+.photo-frame {
+  width: 200px;
+  height: 200px;
+  border-radius: 40px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+  border: 4px solid var(--paper);
+  box-shadow: var(--shadow-sticker);
+}
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-badge {
+  position: absolute;
+  bottom: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--paper);
+  color: var(--pink-ink);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 6px 14px -4px rgba(74, 54, 32, 0.35);
+  white-space: nowrap;
+}
+
+.photo-caption {
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: center;
+  margin: 0 0 28px;
+  max-width: 260px;
+  line-height: 1.5;
+}
+.photo-caption strong { color: var(--ink); display: block; font-size: 14px; margin-top: 2px; }
+
+/* =========================================================
+   Identity block
+   ========================================================= */
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(30px, 7vw, 38px);
+  margin: 0;
+  text-align: center;
+  color: var(--ink);
+}
+
+.role {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--purple-ink);
+  text-align: center;
+  margin: 6px 0 18px;
+}
+
+.tagline {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--ink-soft);
+  max-width: 340px;
+  margin: 0 0 16px;
+}
+
+.bio {
+  font-size: 17px;
+  line-height: 1.65;
+  text-align: center;
+  color: var(--ink-soft);
+  max-width: 350px;
+  margin: 0 0 32px;
+}
+.bio strong { color: var(--ink); font-weight: 700; }
+
+/* =========================================================
+   Handwritten eyebrow accent (used once, restrained)
+   ========================================================= */
+
+.eyebrow-script {
+  font-family: var(--font-script);
+  font-size: 22px;
+  color: var(--pink-ink);
+  transform: rotate(-2deg);
+  margin: 0 0 6px;
+  text-align: center;
+}
+
+/* =========================================================
+   CTA sticker cards
+   ========================================================= */
+
+.paths {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+
+.path-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 22px;
+  text-align: left;
+  transition: transform .22s ease, box-shadow .22s ease;
+  cursor: pointer;
+}
+.path-card:hover,
+.path-card:focus-visible {
+  transform: translateY(-3px) rotate(-0.4deg);
+  box-shadow: var(--shadow-sticker-hover);
+}
+.path-card:active { transform: translateY(-1px) rotate(0deg); }
+
+.path-card__icon {
+  flex: none;
+  width: 62px;
+  height: 62px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.path-card__icon svg { width: 30px; height: 30px; }
+
+.path-card--presencial .path-card__icon { background: #EFE7FA; color: var(--purple-ink); }
+.path-card--online .path-card__icon { background: #E4F9FF; color: var(--blue-ink); }
+
+.path-card__text { flex: 1 1 auto; min-width: 0; }
+
+.path-card__title {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--ink);
+  margin: 0 0 3px;
+}
+
+.path-card__subtitle {
+  display: block;
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.path-card__arrow {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  color: var(--ink-faint);
+  transition: transform .22s ease;
+}
+.path-card:hover .path-card__arrow { transform: translateX(3px); }
+
+/* =========================================================
+   Jogos card (informational, coming soon)
+   ========================================================= */
+
+.games-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  margin-bottom: 28px;
+  background: linear-gradient(135deg, #FFFCF4, #FFF7E4);
+}
+
+.games-card__icon {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #FFF1CC;
+  color: var(--yellow-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.games-card__icon svg { width: 22px; height: 22px; }
+
+.games-card__text { flex: 1 1 auto; min-width: 0; }
+.games-card__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  margin: 0 0 3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.games-card__subtitle { display: block; font-size: 14px; color: var(--ink-soft); margin: 0; line-height: 1.4; }
+
+.badge-soon {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 10.5px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--yellow-ink);
+  background: var(--yellow);
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+}
+
+/* =========================================================
+   Social row
+   ========================================================= */
+
+.social-row {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.social-pill {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px 10px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.social-pill svg { width: 21px; height: 21px; flex: none; }
+.social-pill:hover, .social-pill:focus-visible { transform: translateY(-2px); box-shadow: var(--shadow-sticker-hover); }
+
+.social-pill--instagram { background: linear-gradient(135deg, #FFE3F0, #FDE7D8); color: var(--pink-ink); border: 4px solid var(--paper); box-shadow: var(--shadow-sticker); }
+.social-pill--whatsapp { background: linear-gradient(135deg, #E1FBEA, #D9F6E9); color: #1F8C55; border: 4px solid var(--paper); box-shadow: var(--shadow-sticker); }
+
+/* =========================================================
+   Footer
+   ========================================================= */
+
+.site-footer {
+  margin-top: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.site-footer img {
+  width: 172px;
+  height: 172px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-sticker);
+  border: 4px solid var(--paper);
+}
+
+.site-footer p {
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: center;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.site-footer .crfa {
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+/* =========================================================
+   Small helper: divider dot between footer lines
+   ========================================================= */
+.dot-sep { opacity: .6; margin: 0 4px; }
+
+/* =========================================================================
+   ATENDIMENTO PRESENCIAL — landing page components
+   Namespaced with "lp-" (landing page) to avoid clashing with the
+   business-card home page classes above, which this file also serves.
+   ========================================================================= */
+
+.lp-topbar {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 22px 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lp-topbar__home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink-soft);
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+  border: 2px solid var(--line);
+  transition: border-color .2s ease, color .2s ease;
+}
+.lp-topbar__home:hover { border-color: var(--purple-deep); color: var(--purple-ink); }
+.lp-topbar__home svg { width: 16px; height: 16px; }
+
+.lp-section {
+  position: relative;
+  z-index: 1;
+  padding: 56px 20px;
+}
+.lp-section--tint-purple { background: #F8F3FC; }
+.lp-section--tint-blue   { background: #EFFBFE; }
+.lp-section--tint-cream  { background: #FFFAEF; }
+
+@media (min-width: 700px) {
+  .lp-section { padding: 84px 32px; }
+}
+
+.lp-inner { max-width: 760px; margin: 0 auto; }
+.lp-inner--narrow { max-width: 640px; }
+
+.lp-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 12.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--purple-ink);
+  background: #EFE7FA;
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  margin: 0 0 18px;
+}
+.lp-eyebrow--blue { color: var(--blue-ink); background: #E4F9FF; }
+
+.lp-h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 5.4vw, 44px);
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 0 0 18px;
+  max-width: 16ch;
+}
+
+.lp-h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(24px, 3.6vw, 30px);
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+
+.lp-sub {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 46ch;
+  margin: 0 0 30px;
+}
+
+.lp-hero {
+  padding-top: 28px;
+  text-align: left;
+}
+.lp-hero__grid {
+  display: grid;
+  gap: 40px;
+  align-items: center;
+}
+@media (min-width: 860px) {
+  .lp-hero__grid { grid-template-columns: 1.1fr 0.9fr; }
+}
+
+.lp-hero__photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  border: 4px solid var(--paper);
+  box-shadow: var(--shadow-sticker);
+  background: linear-gradient(160deg, #FBF3E6, #F3E9F9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--ink-faint);
+  position: relative;
+}
+.lp-hero__photo svg { width: 44px; height: 44px; }
+.lp-hero__photo span {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 0 20px;
+}
+
+/* Buttons */
+.lp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  padding: 17px 28px;
+  border-radius: var(--radius-pill);
+  transition: transform .2s ease, box-shadow .2s ease;
+  border: none;
+  cursor: pointer;
+}
+.lp-btn svg { width: 21px; height: 21px; flex: none; }
+.lp-btn:hover, .lp-btn:focus-visible { transform: translateY(-2px); }
+
+.lp-btn--primary {
+  background: linear-gradient(135deg, #25D366, #1FAF57);
+  color: #fff;
+  box-shadow: 0 14px 28px -10px rgba(31, 175, 87, 0.55);
+}
+.lp-btn--primary:hover { box-shadow: 0 18px 32px -8px rgba(31, 175, 87, 0.6); }
+
+.lp-btn--ghost {
+  background: var(--paper);
+  color: var(--purple-ink);
+  border: 2px solid var(--purple);
+}
+.lp-btn--ghost:hover { background: #F5EFFC; }
+
+.lp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 6px;
+}
+
+/* Signs list ("para quem é") */
+.lp-signs {
+  list-style: none;
+  margin: 0 0 30px;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+@media (min-width: 640px) {
+  .lp-signs { grid-template-columns: 1fr 1fr; gap: 16px; }
+}
+.lp-sign {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  box-shadow: 0 8px 18px -12px rgba(74,54,32,.25);
+}
+.lp-sign__icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #EFE7FA;
+  color: var(--purple-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lp-sign__icon svg { width: 20px; height: 20px; }
+.lp-sign p {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  padding-top: 8px;
+}
+
+.lp-note {
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin: 0 0 22px;
+}
+.lp-note strong { color: var(--ink); }
+
+/* Steps ("como funciona") — numbered, because order is real here */
+.lp-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: step;
+}
+.lp-step {
+  position: relative;
+  display: flex;
+  gap: 20px;
+  padding-bottom: 34px;
+}
+.lp-step:last-child { padding-bottom: 0; }
+.lp-step::before {
+  content: "";
+  position: absolute;
+  left: 23px;
+  top: 48px;
+  bottom: 0;
+  width: 2px;
+  background: var(--line);
+}
+.lp-step:last-child::before { display: none; }
+
+.lp-step__num {
+  counter-increment: step;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 3px solid var(--purple);
+  color: var(--purple-ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+.lp-step__num::before { content: counter(step); }
+
+.lp-step__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18.5px;
+  color: var(--ink);
+  margin: 8px 0 4px;
+}
+.lp-step__text {
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 48ch;
+}
+
+/* Differentials grid */
+.lp-diff-grid {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+}
+@media (min-width: 640px) {
+  .lp-diff-grid { grid-template-columns: 1fr 1fr; }
+}
+.lp-diff-card {
+  padding: 22px;
+}
+.lp-diff-card__icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #E4F9FF;
+  color: var(--blue-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.lp-diff-card__icon svg { width: 23px; height: 23px; }
+.lp-diff-card__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+.lp-diff-card__text {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* Gallery + info ("conheça o consultório") */
+.lp-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.lp-gallery__item {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-md);
+  border: 3px solid var(--paper);
+  box-shadow: 0 8px 18px -12px rgba(74,54,32,.3);
+  background: linear-gradient(160deg, #FBF3E6, #F0EAF7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--ink-faint);
+  padding: 10px;
+  text-align: center;
+}
+.lp-gallery__item svg { width: 26px; height: 26px; }
+.lp-gallery__item span {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.lp-info-card {
+  padding: 26px;
+  display: grid;
+  gap: 18px;
+}
+@media (min-width: 640px) {
+  .lp-info-card { grid-template-columns: repeat(3, 1fr); }
+}
+.lp-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.lp-info-row__icon {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #FFF1CC;
+  color: var(--yellow-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lp-info-row__icon svg { width: 18px; height: 18px; }
+.lp-info-row__label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14.5px;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.lp-info-row__value {
+  display: block;
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.lp-placeholder-tag {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--pink-ink);
+  background: #FFE9F2;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  margin-top: 4px;
+}
+
+/* FAQ — native <details>/<summary>, zero JS, fully robust */
+.lp-faq { display: flex; flex-direction: column; gap: 12px; }
+.lp-faq details {
+  background: var(--paper);
+  border-radius: var(--radius-md);
+  padding: 4px 20px;
+  box-shadow: 0 8px 18px -12px rgba(74,54,32,.22);
+}
+.lp-faq summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16.5px;
+  color: var(--ink);
+}
+.lp-faq summary::-webkit-details-marker { display: none; }
+.lp-faq summary .chev {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--purple-ink);
+  transition: transform .2s ease;
+}
+.lp-faq details[open] summary .chev { transform: rotate(180deg); }
+.lp-faq .lp-faq__answer {
+  margin: 0 0 18px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* Final CTA band */
+.lp-final {
+  background: linear-gradient(135deg, var(--purple-deep), var(--pink-deep));
+  text-align: center;
+  padding: 70px 20px;
+}
+.lp-final .lp-h2 { color: #fff; max-width: 22ch; margin: 0 auto 14px; }
+.lp-final .lp-sub { color: rgba(255,255,255,.9); margin: 0 auto 30px; }
+.lp-final .lp-btn--primary { box-shadow: 0 14px 28px -8px rgba(0,0,0,.35); }
+.lp-final .lp-actions { justify-content: center; }
+
+.lp-map-note {
+  margin-top: 26px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,.16);
+  color: #fff;
+  font-size: 14px;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+}
+.lp-map-note svg { width: 18px; height: 18px; flex: none; }
+
+/* Sticky mobile CTA — always visible, no scroll-based JS required */
+.lp-sticky-cta {
+  display: none;
+}
+@media (max-width: 720px) {
+  .lp-sticky-cta {
+    display: flex;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 40;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(6px);
+    border-top: 1px solid var(--line);
+  }
+  .lp-sticky-cta .lp-btn { flex: 1 1 auto; }
+  .lp-final { padding-bottom: 110px; }
+  body { padding-bottom: 76px; }
+}
+
+.lp-footer-spacer { height: 0; }
+
+/* Blue theme override — used on the Atendimento Online page so its accent
+   matches the "Atendimento Online" card's color on the home page, while
+   reusing every component built for the presencial page. */
+body.theme-blue .lp-step__num { border-color: var(--blue); color: var(--blue-ink); }
+body.theme-blue .lp-btn--ghost { color: var(--blue-ink); border-color: var(--blue); }
+body.theme-blue .lp-btn--ghost:hover { background: #EAFBFF; }
