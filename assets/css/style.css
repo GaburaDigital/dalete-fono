@@ -1,6 +1,6 @@
 /* =========================================================
    Dálete Cavalcante — Fonoaudióloga Infantojuvenil
-   Cartão de visita digital
+   Site completo: cartão de visita + landing pages
    ========================================================= */
 
 :root {
@@ -116,8 +116,6 @@ button:focus-visible {
   width: 34px;
   animation: drift 7s ease-in-out infinite;
 }
-.butterfly-deco path,
-.butterfly-deco ellipse { }
 
 @keyframes drift {
   0%, 100% { transform: translate(0, 0) rotate(-4deg); }
@@ -166,18 +164,19 @@ button:focus-visible {
    approach that hides content until an animation completes risks
    showing a blank page to a tool or bot that captures a single
    frame before the timeline finishes. Content is simply present.
-   Motion is reserved for direct interaction (button hover/focus
-   below), which carries no such risk. */
+   Motion is reserved for direct interaction (button hover/focus,
+   photo hover-swap below), which carries no such risk. */
 
 /* =========================================================
-   Header: hero illustration — shown whole, uncropped, so the
-   full artwork (balloons, clouds, butterfly) reads clearly.
+   Header: hero illustration — shown whole, uncropped.
+   Kept modest in size so it reads as a decorative flourish
+   above the real content, not the main visual.
    ========================================================= */
 
 .hero-illustration {
-  width: 220px;
-  margin-bottom: 6px;
-  filter: drop-shadow(0 12px 20px rgba(74, 54, 32, 0.16));
+  width: 150px;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 10px 16px rgba(74, 54, 32, 0.14));
 }
 .hero-illustration img {
   width: 100%;
@@ -185,18 +184,21 @@ button:focus-visible {
 }
 
 @media (min-width: 600px) {
-  .hero-illustration { width: 250px; }
+  .hero-illustration { width: 168px; }
 }
 
 /* =========================================================
-   Photo placeholder
+   Profile photo — square (1:1), with a hover-swap gallery.
+   Default state (and touch devices, which have no hover)
+   always shows the first image; the swap is a pure-CSS
+   enhancement that only ever runs on top of that safe default.
    ========================================================= */
 
 .photo-frame {
-  width: 200px;
-  height: 200px;
+  width: 220px;
+  height: 220px;
   border-radius: 40px;
-  margin-bottom: 14px;
+  margin-bottom: 22px;
   position: relative;
   overflow: hidden;
   border: 4px solid var(--paper);
@@ -206,35 +208,37 @@ button:focus-visible {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  aspect-ratio: 1 / 1;
 }
 
-.photo-badge {
+/* Hover-swap gallery: up to 3 stacked photos. Image 1 is the
+   default/static/no-JS/touch state. On hover (pointer devices
+   only), the three cycle in sequence for as long as the pointer
+   stays over the frame. */
+.photo-swap { position: relative; }
+.photo-swap img {
   position: absolute;
-  bottom: 9px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--paper);
-  color: var(--pink-ink);
-  font-family: var(--font-body);
-  font-weight: 800;
-  font-size: 11px;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  padding: 5px 12px;
-  border-radius: var(--radius-pill);
-  box-shadow: 0 6px 14px -4px rgba(74, 54, 32, 0.35);
-  white-space: nowrap;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.photo-swap img:first-child { position: relative; opacity: 1; }
+
+@media (hover: hover) {
+  @keyframes photoSwapShow1 { 0%, 33.32% { opacity: 1; } 33.33%, 100% { opacity: 0; } }
+  @keyframes photoSwapShow2 { 0%, 33.32% { opacity: 0; } 33.33%, 66.65% { opacity: 1; } 66.66%, 100% { opacity: 0; } }
+  @keyframes photoSwapShow3 { 0%, 66.65% { opacity: 0; } 66.66%, 100% { opacity: 1; } }
+
+  .photo-swap:hover img:nth-child(1) { animation: photoSwapShow1 4.5s steps(1, end) infinite; }
+  .photo-swap:hover img:nth-child(2) { animation: photoSwapShow2 4.5s steps(1, end) infinite; }
+  .photo-swap:hover img:nth-child(3) { animation: photoSwapShow3 4.5s steps(1, end) infinite; }
 }
 
-.photo-caption {
-  font-size: 14px;
-  color: var(--ink-soft);
-  text-align: center;
-  margin: 0 0 28px;
-  max-width: 260px;
-  line-height: 1.5;
+@media (prefers-reduced-motion: reduce) {
+  .photo-swap:hover img { animation: none !important; }
+  .photo-swap:hover img:first-child { opacity: 1; }
+  .photo-swap:hover img:not(:first-child) { opacity: 0; }
 }
-.photo-caption strong { color: var(--ink); display: block; font-size: 14px; margin-top: 2px; }
 
 /* =========================================================
    Identity block
@@ -479,15 +483,12 @@ button:focus-visible {
   color: var(--ink-soft);
 }
 
-/* =========================================================
-   Small helper: divider dot between footer lines
-   ========================================================= */
 .dot-sep { opacity: .6; margin: 0 4px; }
 
 /* =========================================================================
-   ATENDIMENTO PRESENCIAL — landing page components
-   Namespaced with "lp-" (landing page) to avoid clashing with the
-   business-card home page classes above, which this file also serves.
+   LANDING PAGES (Atendimento Presencial / Atendimento Online)
+   Namespaced with "lp-" to avoid clashing with the business-card
+   home page classes above, which this file also serves.
    ========================================================================= */
 
 .lp-topbar {
@@ -590,31 +591,21 @@ button:focus-visible {
   .lp-hero__grid { grid-template-columns: 1.1fr 0.9fr; }
 }
 
+/* Hero photo — square (1:1), real photograph */
 .lp-hero__photo {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  max-width: 420px;
+  aspect-ratio: 1 / 1;
   border-radius: var(--radius-lg);
   border: 4px solid var(--paper);
   box-shadow: var(--shadow-sticker);
-  background: linear-gradient(160deg, #FBF3E6, #F3E9F9);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  color: var(--ink-faint);
-  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
 }
-.lp-hero__photo svg { width: 44px; height: 44px; }
-.lp-hero__photo span {
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 12.5px;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  text-align: center;
-  padding: 0 20px;
+.lp-hero__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Buttons */
@@ -800,7 +791,7 @@ button:focus-visible {
   margin: 0;
 }
 
-/* Gallery + info ("conheça o consultório") */
+/* Photo gallery ("Fotos") — real square photographs */
 .lp-gallery {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -808,28 +799,19 @@ button:focus-visible {
   margin-bottom: 28px;
 }
 .lp-gallery__item {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
   border-radius: var(--radius-md);
   border: 3px solid var(--paper);
   box-shadow: 0 8px 18px -12px rgba(74,54,32,.3);
-  background: linear-gradient(160deg, #FBF3E6, #F0EAF7);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: var(--ink-faint);
-  padding: 10px;
-  text-align: center;
+  overflow: hidden;
 }
-.lp-gallery__item svg { width: 26px; height: 26px; }
-.lp-gallery__item span {
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: .03em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
+.lp-gallery__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s ease;
 }
+.lp-gallery__item:hover img { transform: scale(1.04); }
 
 .lp-info-card {
   padding: 26px;
@@ -837,7 +819,7 @@ button:focus-visible {
   gap: 18px;
 }
 @media (min-width: 640px) {
-  .lp-info-card { grid-template-columns: repeat(3, 1fr); }
+  .lp-info-card { grid-template-columns: repeat(2, 1fr); }
 }
 .lp-info-row {
   display: flex;
@@ -869,18 +851,6 @@ button:focus-visible {
   font-size: 14px;
   color: var(--ink-soft);
   line-height: 1.5;
-}
-.lp-placeholder-tag {
-  display: inline-block;
-  font-size: 10.5px;
-  font-weight: 800;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--pink-ink);
-  background: #FFE9F2;
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  margin-top: 4px;
 }
 
 /* FAQ — native <details>/<summary>, zero JS, fully robust */
@@ -963,8 +933,6 @@ button:focus-visible {
   .lp-final { padding-bottom: 110px; }
   body { padding-bottom: 76px; }
 }
-
-.lp-footer-spacer { height: 0; }
 
 /* Blue theme override — used on the Atendimento Online page so its accent
    matches the "Atendimento Online" card's color on the home page, while
