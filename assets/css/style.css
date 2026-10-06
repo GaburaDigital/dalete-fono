@@ -369,7 +369,7 @@ button:focus-visible {
 .path-card:hover .path-card__arrow { transform: translateX(3px); }
 
 /* =========================================================
-   Jogos card (informational, coming soon)
+   Jogos card (link para o site de jogos)
    ========================================================= */
 
 .games-card {
@@ -380,7 +380,17 @@ button:focus-visible {
   padding: 14px 16px;
   margin-bottom: 28px;
   background: linear-gradient(135deg, #FFFCF4, #FFF7E4);
+  text-align: left;
+  cursor: pointer;
+  transition: transform .22s ease, box-shadow .22s ease;
 }
+.games-card:hover,
+.games-card:focus-visible {
+  transform: translateY(-3px) rotate(-0.4deg);
+  box-shadow: var(--shadow-sticker-hover);
+}
+.games-card:active { transform: translateY(-1px) rotate(0deg); }
+.games-card:hover .path-card__arrow { transform: translateX(3px); }
 
 .games-card__icon {
   flex: none;
@@ -407,18 +417,6 @@ button:focus-visible {
   flex-wrap: wrap;
 }
 .games-card__subtitle { display: block; font-size: 14px; color: var(--ink-soft); margin: 0; line-height: 1.4; }
-
-.badge-soon {
-  font-family: var(--font-body);
-  font-weight: 800;
-  font-size: 10.5px;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: var(--yellow-ink);
-  background: var(--yellow);
-  padding: 3px 9px;
-  border-radius: var(--radius-pill);
-}
 
 /* =========================================================
    Social row
